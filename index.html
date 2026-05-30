@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERA | Luxury Cinematic Architecture & Residences</title>
+  <meta name="description"
+    content="Immerse yourself in Aethera Residences - a collection of premium, state-of-the-art luxury estates that harmonize cinematic design, elite minimalism, and structural artwork.">
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <!-- IMMEDIATE INLINE THEME INITIALIZER (PREVENTS FLASH OF LIGHT THEME) -->
+  <script>
+    (function() {
+      const storedTheme = localStorage.getItem('aethera_theme');
+      if (storedTheme === 'light') {
+        document.body.classList.add('light-theme');
+      } else {
+        document.body.classList.remove('light-theme');
+      }
+    })();
+  </script>
+
+  <!-- HIGH-PRECISION CUSTOM CURSOR -->
+  <div class="custom-cursor" id="cursor"></div>
+
+  <!-- LUXURY LOADING PRELOADER -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-brand">AETHERA</div>
+    <div class="preloader-line-container">
+      <div class="preloader-line"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+     LANDING PAGE ROOT CONTAINER
+     ========================================== -->
+  <div id="landing-page">
+
+    <!-- FLOATING NAVBAR -->
+    <header class="navbar" id="navbar">
+      <a href="#" class="nav-logo hover-target">AETHERA<span>.</span></a>
+
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#" class="hover-target">Home</a></li>
+        <li><a href="#collections" class="hover-target">Collections</a></li>
+        <li><a href="#philosophy" class="hover-target">Philosophy</a></li>
+        <li><a href="#inquiry" class="hover-target">Inquiry</a></li>
+      </ul>
+
+      <a href="#inquiry" class="nav-cta hover-target">Arrange Visit</a>
+    </header>
+
+    <!-- 1. HERO SECTION -->
+    <section class="hero" id="hero">
+      <!-- Fullscreen loop video container -->
+      <div class="hero-video-container">
+        <video autoplay loop muted playsinline id="hero-video">
+          <source src="assets/videos/hero video.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      <!-- Luxury Overlay -->
+      <div class="hero-overlay"></div>
+
+      <!-- Hero Content -->
+      <div class="hero-content" id="hero-content">
+        <h2 class="hero-tagline">Elite Architectural Studio</h2>
+        <h1 class="hero-title">Sculpting the<br><span>Horizon of Living</span></h1>
+        <div class="hero-btn-container">
+          <a href="#collections" class="hero-cta hover-target">Explore Collections</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PROPERTY SHOWCASE -->
+    <section class="showcase" id="collections">
+      <div class="section-header reveal">
+        <span class="section-tag">Private Portfolio</span>
+        <h2 class="section-title">The Collections</h2>
+      </div>
+
+      <!-- Category Filters -->
+      <div class="filter-tabs reveal reveal-delay-1">
+        <button class="filter-tab active hover-target" data-filter="all">All Estates</button>
+        <button class="filter-tab hover-target" data-filter="exteriors">Exteriors Only</button>
+        <button class="filter-tab hover-target" data-filter="interiors">Interiors Only</button>
+      </div>
+
+      <!-- Property Card Matrix -->
+      <div class="property-grid">
+
+        <!-- Residence I -->
+        <article class="property-card reveal hover-target" data-category="exteriors interiors" id="card-1">
+          <div class="property-media">
+            <span class="view-badge">Exterior</span>
+            <div class="property-img-wrapper">
+              <img src="assets/images/exterior1.jpg" alt="Obsidian Pavilion Exterior" class="property-img exterior-img">
+              <img src="assets/images/interior1.jpg" alt="Obsidian Pavilion Interior" class="property-img interior-img">
+            </div>
+            <!-- Toggle State Bar -->
+            <div class="card-toggle-panel">
+              <button class="toggle-btn exterior-btn active hover-target" data-view="exterior">Exterior</button>
+              <button class="toggle-btn interior-btn hover-target" data-view="interior">Interior</button>
+            </div>
+          </div>
+
+          <div class="property-details">
+            <div class="property-meta">
+              <span>Residence I</span>
+              <span>$12,450,000</span>
+            </div>
+            <h3 class="property-name">The Obsidian Pavilion</h3>
+            <p class="property-location">Aspen, Colorado</p>
+            <div class="property-specs">
+              <div class="spec-item">
+                Sq Ft <span>8,400</span>
+              </div>
+              <div class="spec-item">
+                Bedrooms <span>5</span>
+              </div>
+              <div class="spec-item">
+                Bathrooms <span>6.5</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Residence II -->
+        <article class="property-card reveal reveal-delay-1 hover-target" data-category="exteriors interiors"
+          id="card-2">
+          <div class="property-media">
+            <span class="view-badge">Exterior</span>
+            <div class="property-img-wrapper">
+              <img src="assets/images/exterior2.jpg" alt="Aetheria Monolith Exterior" class="property-img exterior-img">
+              <img src="assets/images/interior2.jpg" alt="Aetheria Monolith Interior" class="property-img interior-img">
+            </div>
+            <!-- Toggle State Bar -->
+            <div class="card-toggle-panel">
+              <button class="toggle-btn exterior-btn active hover-target" data-view="exterior">Exterior</button>
+              <button class="toggle-btn interior-btn hover-target" data-view="interior">Interior</button>
+            </div>
+          </div>
+
+          <div class="property-details">
+            <div class="property-meta">
+              <span>Residence II</span>
+              <span>$16,800,000</span>
+            </div>
+            <h3 class="property-name">Aetheria Monolith</h3>
+            <p class="property-location">Big Sur, California</p>
+            <div class="property-specs">
+              <div class="spec-item">
+                Sq Ft <span>11,200</span>
+              </div>
+              <div class="spec-item">
+                Bedrooms <span>6</span>
+              </div>
+              <div class="spec-item">
+                Bathrooms <span>8.0</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Residence III -->
+        <article class="property-card reveal reveal-delay-2 hover-target" data-category="exteriors interiors"
+          id="card-3">
+          <div class="property-media">
+            <span class="view-badge">Exterior</span>
+            <div class="property-img-wrapper">
+              <img src="assets/images/exterior3.jpg" alt="Luminary Crest Exterior" class="property-img exterior-img">
+              <img src="assets/images/interior3.jpg" alt="Luminary Crest Interior" class="property-img interior-img">
+            </div>
+            <!-- Toggle State Bar -->
+            <div class="card-toggle-panel">
+              <button class="toggle-btn exterior-btn active hover-target" data-view="exterior">Exterior</button>
+              <button class="toggle-btn interior-btn hover-target" data-view="interior">Interior</button>
+            </div>
+          </div>
+
+          <div class="property-details">
+            <div class="property-meta">
+              <span>Residence III</span>
+              <span>$24,000,000</span>
+            </div>
+            <h3 class="property-name">The Luminary Crest</h3>
+            <p class="property-location">Malibu, California</p>
+            <div class="property-specs">
+              <div class="spec-item">
+                Sq Ft <span>14,500</span>
+              </div>
+              <div class="spec-item">
+                Bedrooms <span>7</span>
+              </div>
+              <div class="spec-item">
+                Bathrooms <span>9.5</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- 3. ABOUT SECTION -->
+    <section class="about" id="philosophy">
+      <!-- Fine-line architect grid overlay -->
+      <div class="architect-grid-bg"></div>
+
+      <div class="about-container">
+        <!-- Media Stack for Parallax Layers -->
+        <div class="about-media-stack">
+          <div class="about-img-container about-img-main reveal-left" id="about-img-1">
+            <img src="assets/images/exterior1.jpg" alt="Aethera Concept Masterpiece">
+          </div>
+          <div class="about-img-container about-img-sub reveal-right" id="about-img-2">
+            <img src="assets/images/interior2.jpg" alt="Aethera Interior Detail">
+          </div>
+        </div>
+
+        <!-- Descriptive Column -->
+        <div class="about-text reveal">
+          <span class="section-tag">Our Vision</span>
+          <blockquote class="about-quote">
+            "Architecture is the <span>sculpture of light</span> and stillness, frozen in time."
+          </blockquote>
+          <p class="about-paragraph">
+            At Aethera, we design homes not merely as shelters, but as cinematic sanctuaries. By fusing raw basaltic
+            concrete, massive frameless glass, and floating structural volumes, we construct a dialogue between pristine
+            organic terrain and pioneering modernist architecture.
+          </p>
+          <p class="about-paragraph">
+            Every location is selectively sourced, and every residence is custom-tailored to amplify the micro-climate,
+            solar orientation, and geographic elevation of its native landscape.
+          </p>
+          <span class="about-signature">Julian Aether, Lead Architect</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. CONTACT / INQUIRY SECTION -->
+    <section class="contact" id="inquiry">
+      <div class="contact-container">
+        <!-- Column 1: Contact details -->
+        <div class="contact-info reveal-left">
+          <div>
+            <span class="section-tag">Acquisition</span>
+            <h2 class="contact-info-title">Begin Your Journey</h2>
+          </div>
+          <ul class="contact-details">
+            <li class="contact-detail-item">
+              Global Headquarters
+              <span>Geneva, Switzerland & Beverly Hills, CA</span>
+            </li>
+            <li class="contact-detail-item">
+              Inquiries
+              <span><a href="mailto:concierge@aethera.luxury" class="hover-target">concierge@aethera.luxury</a></span>
+            </li>
+            <li class="contact-detail-item">
+              Telephone
+              <span>+1 (800) 900-AETH</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Column 2: Inquiry Form -->
+        <div class="contact-form-column reveal-right">
+          <form class="inquiry-form" id="landing-contact-form">
+            <div class="form-group">
+              <input type="text" id="form-name" class="form-input hover-target" placeholder=" " required>
+              <label for="form-name" class="form-label">Full Name</label>
+              <div class="form-input-focus-line"></div>
+            </div>
+
+            <div class="form-group">
+              <input type="email" id="form-email" class="form-input hover-target" placeholder=" " required>
+              <label for="form-email" class="form-label">Email Address</label>
+              <div class="form-input-focus-line"></div>
+            </div>
+
+            <div class="form-group">
+              <select id="form-residence" class="form-input form-select hover-target" required>
+                <option value="" disabled selected hidden></option>
+                <option value="The Obsidian Pavilion">Residence I: The Obsidian Pavilion ($12.45M)</option>
+                <option value="Aetheria Monolith">Residence II: Aetheria Monolith ($16.80M)</option>
+                <option value="The Luminary Crest">Residence III: The Luminary Crest ($24.00M)</option>
+                <option value="Custom Architecture Commission">Custom Architecture Commission</option>
+              </select>
+              <label for="form-residence" class="form-label">Estate of Interest</label>
+              <div class="form-input-focus-line"></div>
+            </div>
+
+            <div class="form-group">
+              <textarea id="form-message" class="form-input hover-target" placeholder=" " rows="4" style="resize: none;"
+                required></textarea>
+              <label for="form-message" class="form-label">Personal Requirements</label>
+              <div class="form-input-focus-line"></div>
+            </div>
+
+            <button type="submit" class="form-submit-btn hover-target">Request Private Tour</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREMIUM FOOTER -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand-column">
+          <a href="#" class="footer-logo hover-target">AETHERA<span>.</span></a>
+          <p class="footer-tagline">Architectural masterworks crafting living sculptures at the edge of the world.</p>
+        </div>
+
+        <div class="footer-links-column">
+          <h4 class="footer-heading">Collections</h4>
+          <ul class="footer-links">
+            <li><a href="#collections" class="hover-target">The Obsidian Pavilion</a></li>
+            <li><a href="#collections" class="hover-target">Aetheria Monolith</a></li>
+            <li><a href="#collections" class="hover-target">The Luminary Crest</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-column">
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="#philosophy" class="hover-target">The Studio</a></li>
+            <li><a href="#philosophy" class="hover-target">Julian Aether</a></li>
+            <li><a href="#inquiry" class="hover-target">Press & Media</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Aethera Architectural Group. All rights reserved. Sourced materials sustainably refined.</p>
+        <div class="footer-socials">
+          <a href="#" class="hover-target">Instagram</a>
+          <a href="#" class="hover-target">Vimeo</a>
+          <a href="#" class="hover-target">LinkedIn</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ==========================================
+     ADMIN DASHBOARD PAGE CONTAINER
+     ========================================== -->
+  <div id="admin-page" style="display: none;">
+    <div class="admin-header">
+      <h1 class="admin-brand hover-target">AETHERA<span>.</span> Admin</h1>
+      <a href="#" class="admin-nav-back hover-target">Back to Site</a>
+    </div>
+
+    <!-- Analytics Dashboard widgets -->
+    <div class="admin-stats-grid">
+      <div class="stat-widget">
+        <div class="stat-widget-label">Unique Site Visitors</div>
+        <div class="stat-widget-value" id="stats-visitors">0</div>
+      </div>
+      <div class="stat-widget">
+        <div class="stat-widget-label">Inquiries Received</div>
+        <div class="stat-widget-value" id="stats-inquiries">0</div>
+      </div>
+      <div class="stat-widget">
+        <div class="stat-widget-label">Deal Pipeline Value</div>
+        <div class="stat-widget-value" id="stats-pipeline"><span>$</span>0.00M</div>
+      </div>
+    </div>
+
+    <!-- Live Customer Inquiries list container -->
+    <div class="admin-content-box">
+      <h2 class="admin-content-title">Customer Inquiries</h2>
+      <div class="inquiry-list-wrapper" id="admin-inquiry-list">
+        <!-- Dynamically populated via Javascript -->
+        <div class="admin-empty-state">No inquiries received yet. Submit the contact form on the homepage to see live
+          analytics!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING TOAST SYSTEM -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- MOCK CORRESPONDENCE RESPONSE MODAL DRAWER -->
+  <div class="response-modal-overlay" id="response-modal-overlay">
+    <div class="response-modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Respond to Message</h3>
+        <button class="modal-close-btn hover-target" id="modal-close-btn">&times;</button>
+      </div>
+      <form id="response-email-form">
+        <input type="hidden" id="modal-sender-email">
+        <div class="form-group" style="margin-bottom: 2rem;">
+          <input type="text" id="modal-recipient" class="form-input hover-target" placeholder=" " readonly>
+          <label class="form-label"
+            style="top: -1.2rem; font-size: 0.7rem; color: var(--gold-accent);">Recipient</label>
+        </div>
+        <div class="form-group" style="margin-bottom: 2rem;">
+          <input type="text" id="modal-subject" class="form-input hover-target" placeholder=" " required>
+          <label for="modal-subject" class="form-label">Subject</label>
+          <div class="form-input-focus-line"></div>
+        </div>
+        <div class="form-group" style="margin-bottom: 2.5rem;">
+          <textarea id="modal-body" class="form-input hover-target" placeholder=" " rows="5" style="resize: none;"
+            required></textarea>
+          <label for="modal-body" class="form-label">Draft Message</label>
+          <div class="form-input-focus-line"></div>
+        </div>
+        <div style="display: flex; gap: 1.5rem; justify-content: flex-end;">
+          <button type="button" class="inquiry-btn hover-target" id="modal-cancel-btn">Cancel</button>
+          <button type="submit" class="form-submit-btn hover-target" style="margin-top: 0; padding: 0.8rem 2rem;">Send
+            Email</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FLOATING THEME SWITCHER CAPSULE -->
+  <button class="theme-toggle-switch hover-target" id="theme-toggle" aria-label="Toggle Theme">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    <span class="theme-switch-slider"></span>
+  </button>
+
+  <script src="index.js"></script>
+</body>
+
+</html>
