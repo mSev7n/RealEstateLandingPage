@@ -6,94 +6,231 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AETHERA | Luxury Cinematic Architecture & Residences</title>
   <meta name="description"
-    content="Immerse yourself in Aethera Residences - a collection of premium, state-of-the-art luxury estates that harmonize cinematic design, elite minimalism, and structural artwork.">
+    content="Immerse yourself in Aethera Residences — architectural sanctuaries at the edge of the world, crafted for those who live beyond the ordinary.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@200;300;400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-  <!-- IMMEDIATE INLINE THEME INITIALIZER (PREVENTS FLASH OF LIGHT THEME) -->
-  <script>
-    (function() {
-      const storedTheme = localStorage.getItem('aethera_theme');
-      if (storedTheme === 'light') {
-        document.body.classList.add('light-theme');
-      } else {
-        document.body.classList.remove('light-theme');
-      }
-    })();
-  </script>
 
-  <!-- HIGH-PRECISION CUSTOM CURSOR -->
-  <div class="custom-cursor" id="cursor"></div>
 
-  <!-- LUXURY LOADING PRELOADER -->
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursor-follower"></div>
+
+  <!-- PRELOADER -->
   <div class="preloader" id="preloader">
-    <div class="preloader-brand">AETHERA</div>
-    <div class="preloader-line-container">
-      <div class="preloader-line"></div>
+    <div class="preloader-inner">
+      <div class="preloader-brand">AETHERA</div>
+      <div class="preloader-bar">
+        <div class="preloader-fill" id="preloader-fill"></div>
+      </div>
+      <div class="preloader-pct" id="preloader-pct">0%</div>
     </div>
   </div>
 
-  <!-- ==========================================
-     LANDING PAGE ROOT CONTAINER
-     ========================================== -->
+  <!-- ===================== LANDING PAGE ===================== -->
   <div id="landing-page">
 
-    <!-- FLOATING NAVBAR -->
+    <!-- NAVBAR -->
     <header class="navbar" id="navbar">
-      <a href="#" class="nav-logo hover-target">AETHERA<span>.</span></a>
-
+      <a href="#" class="nav-logo">AETHERA<span class="nav-dot">.</span></a>
       <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
-
-      <ul class="nav-links" id="nav-links">
-        <li><a href="#" class="hover-target">Home</a></li>
-        <li><a href="#collections" class="hover-target">Collections</a></li>
-        <li><a href="#philosophy" class="hover-target">Philosophy</a></li>
-        <li><a href="#inquiry" class="hover-target">Inquiry</a></li>
-      </ul>
-
-      <a href="#inquiry" class="nav-cta hover-target">Arrange Visit</a>
+      <nav class="nav-links" id="nav-links">
+        <a href="#" class="nav-link">Home</a>
+        <a href="#collections" class="nav-link">Collections</a>
+        <a href="#philosophy" class="nav-link">Philosophy</a>
+        <a href="#inquiry" class="nav-link">Inquiry</a>
+      </nav>
+      <a href="#inquiry" class="nav-cta">Arrange Visit</a>
     </header>
 
-    <!-- 1. HERO SECTION -->
-    <section class="hero" id="hero">
-      <!-- Fullscreen loop video container -->
-      <div class="hero-video-container">
-        <video autoplay loop muted playsinline id="hero-video">
-          <source src="assets/videos/hero video.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      </div>
+    <!-- ===== HERO: SCROLLHOUSE 3D SECTION ===== -->
+    <section class="hero-scroll" id="hero">
+      <!-- 5-screen scroll track -->
+      <div class="scroll-track">
+        <div class="scroll-sticky" id="scroll-sticky">
 
-      <!-- Luxury Overlay -->
-      <div class="hero-overlay"></div>
+          <!-- Dark atmosphere bg -->
+          <div class="scroll-bg"></div>
 
-      <!-- Hero Content -->
-      <div class="hero-content" id="hero-content">
-        <h2 class="hero-tagline">Elite Architectural Studio</h2>
-        <h1 class="hero-title">Sculpting the<br><span>Horizon of Living</span></h1>
-        <div class="hero-btn-container">
-          <a href="#collections" class="hero-cta hover-target">Explore Collections</a>
+          <!-- Subtle architectural grid -->
+          <div class="scroll-grid"></div>
+
+          <!-- Ambient particles -->
+          <canvas class="particles-canvas" id="particles-canvas"></canvas>
+
+          <!-- 3D CSS House -->
+          <div class="house-stage" id="house-stage">
+            <div class="house-3d" id="house-3d">
+
+              <!-- GROUND -->
+              <div class="face ground"></div>
+
+              <!-- MAIN BODY -->
+              <div class="face body-front">
+                <div class="glass-panel" style="left:10px;top:8px;width:62px;height:110px"></div>
+                <div class="glass-panel" style="left:90px;top:8px;width:62px;height:110px"></div>
+                <div class="glass-panel" style="left:170px;top:8px;width:62px;height:110px"></div>
+                <div class="door">
+                  <div class="door-handle"></div>
+                </div>
+                <!-- Gold accent fins -->
+                <div class="fin" style="left:-2px"></div>
+                <div class="fin" style="left:56px"></div>
+                <div class="fin" style="left:112px"></div>
+                <div class="fin" style="left:168px"></div>
+                <div class="fin" style="left:224px"></div>
+              </div>
+              <div class="face body-back">
+                <div class="glass-panel" style="left:20px;top:10px;right:20px;bottom:20px"></div>
+              </div>
+              <div class="face body-right">
+                <div class="glass-panel" style="right:12px;top:10px;width:60px;height:100px"></div>
+              </div>
+              <div class="face body-left"></div>
+
+              <!-- ROOF -->
+              <div class="face roof-main"></div>
+
+              <!-- LEFT WING -->
+              <div class="face wing-front">
+                <div class="glass-panel" style="left:8px;top:8px;width:80px;height:70px"></div>
+              </div>
+              <div class="face wing-roof"></div>
+
+              <!-- POOL DECK -->
+              <div class="face pool-deck">
+                <div class="pool-water"></div>
+              </div>
+
+              <!-- CHIMNEY -->
+              <div class="face chimney"></div>
+
+              <!-- STEPS -->
+              <div class="face step-1"></div>
+              <div class="face step-2"></div>
+
+              <!-- TREES -->
+              <div class="tree" style="--tx:-120px;--tz:40px"></div>
+              <div class="tree" style="--tx:160px;--tz:-50px"></div>
+              <div class="tree" style="--tx:-140px;--tz:-40px"></div>
+
+              <!-- LOUNGE CHAIRS -->
+              <div class="lounge-chair" style="--ox:0px"></div>
+              <div class="lounge-chair" style="--ox:40px"></div>
+
+            </div>
+          </div>
+
+          <!-- WELCOME LAYER -->
+          <div class="welcome-layer" id="welcome-layer">
+            <span class="welcome-tag">Premium Residences</span>
+            <h1 class="welcome-title">Welcome to <span>Aethera</span></h1>
+            <span class="welcome-scroll-hint">Scroll down to enter</span>
+          </div>
+
+          <!-- Vignette overlay -->
+          <div class="vignette"></div>
+
+          <!-- WORDMARK -->
+          <div class="scroll-wordmark" id="scroll-wordmark">AETHERA</div>
+
+          <!-- TEXT PANELS -->
+          <div class="panels-layer">
+            <!-- Panel 1 -->
+            <div class="text-panel" id="panel-1">
+              <div class="panel-tag-row">
+                <div class="panel-line"></div><span class="panel-tag">Elite Architectural Studio</span>
+              </div>
+              <h1 class="panel-h1">Sculpting the</h1>
+              <h1 class="panel-h1 italic">Horizon <span class="gold">of Living</span></h1>
+              <p class="panel-sub">Architectural sanctuaries at the edge of the world, crafted for those who live beyond
+                the ordinary.</p>
+            </div>
+
+            <!-- Panel 2 -->
+            <div class="text-panel panel-hidden" id="panel-2">
+              <div class="panel-tag-row">
+                <div class="panel-line"></div><span class="panel-tag">Front Elevation</span>
+              </div>
+              <h1 class="panel-h1">Glass &</h1>
+              <h1 class="panel-h1 italic">Concrete <span class="gold">Mastery</span></h1>
+              <p class="panel-sub">Floor-to-ceiling frameless glazing. Raw basaltic concrete. Light sculpted by
+                architecture.</p>
+            </div>
+
+            <!-- Panel 3 -->
+            <div class="text-panel panel-right panel-hidden" id="panel-3">
+              <div class="panel-tag-row panel-tag-row-right"><span class="panel-tag">Side Terrace</span>
+                <div class="panel-line"></div>
+              </div>
+              <h1 class="panel-h1">Infinity</h1>
+              <h1 class="panel-h1 italic"><span class="gold">Dissolves</span></h1>
+              <p class="panel-sub">The pool edge meets the horizon. Sky, water, and stone — unified.</p>
+            </div>
+
+            <!-- Panel 4 (CTA) -->
+            <div class="text-panel panel-center panel-hidden" id="panel-4">
+              <div class="panel-tag-row panel-tag-row-center">
+                <div class="panel-line"></div><span class="panel-tag">Private Collection · 2026</span>
+                <div class="panel-line"></div>
+              </div>
+              <h1 class="panel-h1">Yours to</h1>
+              <h1 class="panel-h1 italic"><span class="gold">Claim</span></h1>
+              <a href="#collections" class="panel-cta">
+                Explore Collections
+                <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+                  <path d="M0 5H15M11 1L15 5L11 9" stroke="rgba(196,160,100,0.8)" stroke-width="1.2" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Frosted badge -->
+          <div class="scroll-badge" id="scroll-badge">
+            <p class="badge-tag">Exclusive Collection</p>
+            <p class="badge-price">3 Residences</p>
+            <span class="badge-from">From $12.45M</span>
+            <div class="badge-line"></div>
+          </div>
+
+          <!-- Scroll progress bar -->
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+
+          <!-- Scroll hint -->
+          <div class="scroll-hint" id="scroll-hint">
+            <div class="scroll-mouse">
+              <div class="scroll-mouse-dot"></div>
+            </div>
+            <span class="scroll-hint-text">Scroll to explore</span>
+          </div>
+
         </div>
       </div>
     </section>
 
-    <!-- 2. PROPERTY SHOWCASE -->
+    <!-- ===== COLLECTIONS ===== -->
     <section class="showcase" id="collections">
       <div class="section-header reveal">
-        <span class="section-tag">Private Portfolio</span>
+        <span class="section-tag-outer">Private Portfolio</span>
         <h2 class="section-title">The Collections</h2>
+        <div class="section-title-line"></div>
       </div>
 
-      <!-- Category Filters -->
-      <div class="filter-tabs reveal reveal-delay-1">
-        <button class="filter-tab active hover-target" data-filter="all">All Estates</button>
-        <button class="filter-tab hover-target" data-filter="exteriors">Exteriors Only</button>
-        <button class="filter-tab hover-target" data-filter="interiors">Interiors Only</button>
+      <div class="filter-tabs reveal">
+        <button class="filter-tab active" data-filter="all">All Estates</button>
+        <button class="filter-tab" data-filter="exteriors">Exteriors</button>
+        <button class="filter-tab" data-filter="interiors">Interiors</button>
       </div>
 
       <!-- Property Card Matrix -->
@@ -212,43 +349,54 @@
       </div>
     </section>
 
-    <!-- 3. ABOUT SECTION -->
+    <!-- ===== PHILOSOPHY ===== -->
     <section class="about" id="philosophy">
-      <!-- Fine-line architect grid overlay -->
-      <div class="architect-grid-bg"></div>
-
+      <div class="architect-grid"></div>
       <div class="about-container">
-        <!-- Media Stack for Parallax Layers -->
-        <div class="about-media-stack">
-          <div class="about-img-container about-img-main reveal-left" id="about-img-1">
-            <img src="assets/images/exterior1.jpg" alt="Aethera Concept Masterpiece">
+        <div class="about-media">
+          <div class="about-img-main reveal-left">
+            <img src="assets/images/exterior1.jpg" alt="Aethera Concept"
+              onerror="this.parentElement.classList.add('img-missing')">
+            <div class="about-img-overlay"></div>
           </div>
-          <div class="about-img-container about-img-sub reveal-right" id="about-img-2">
-            <img src="assets/images/interior2.jpg" alt="Aethera Interior Detail">
+          <div class="about-img-sub reveal-right">
+            <img src="assets/images/interior2.jpg" alt="Aethera Interior"
+              onerror="this.parentElement.classList.add('img-missing')">
+            <div class="about-img-overlay"></div>
+          </div>
+          <div class="about-float-stat reveal">
+            <span class="float-num">24</span>
+            <span class="float-label">Years of Mastery</span>
           </div>
         </div>
 
-        <!-- Descriptive Column -->
         <div class="about-text reveal">
-          <span class="section-tag">Our Vision</span>
+          <span class="section-tag-outer">Our Vision</span>
           <blockquote class="about-quote">
-            "Architecture is the <span>sculpture of light</span> and stillness, frozen in time."
+            "Architecture is the <em>sculpture of light</em> and stillness, frozen in time."
           </blockquote>
-          <p class="about-paragraph">
-            At Aethera, we design homes not merely as shelters, but as cinematic sanctuaries. By fusing raw basaltic
-            concrete, massive frameless glass, and floating structural volumes, we construct a dialogue between pristine
-            organic terrain and pioneering modernist architecture.
-          </p>
-          <p class="about-paragraph">
-            Every location is selectively sourced, and every residence is custom-tailored to amplify the micro-climate,
-            solar orientation, and geographic elevation of its native landscape.
-          </p>
-          <span class="about-signature">Julian Aether, Lead Architect</span>
+          <p class="about-paragraph">At Aethera, we design homes not merely as shelters, but as cinematic sanctuaries.
+            By fusing raw basaltic concrete, massive frameless glass, and floating structural volumes, we construct a
+            dialogue between pristine organic terrain and pioneering modernist architecture.</p>
+          <p class="about-paragraph">Every location is selectively sourced, and every residence is custom-tailored to
+            amplify the micro-climate, solar orientation, and geographic elevation of its native landscape.</p>
+          <div class="about-signature-block">
+            <div class="signature-line"></div>
+            <span class="about-signature">Julian Aether, Lead Architect</span>
+          </div>
+          <div class="about-stats-row">
+            <div class="about-stat"><span class="stat-num">3</span><span class="stat-desc">Exclusive Residences</span>
+            </div>
+            <div class="about-stat"><span class="stat-num">$52M+</span><span class="stat-desc">Portfolio Value</span>
+            </div>
+            <div class="about-stat"><span class="stat-num">100%</span><span class="stat-desc">Bespoke Design</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 4. CONTACT / INQUIRY SECTION -->
+    <!-- ===== INQUIRY ===== -->
     <section class="contact" id="inquiry">
       <div class="contact-container">
         <!-- Column 1: Contact details -->
@@ -308,129 +456,91 @@
             </div>
 
             <button type="submit" class="form-submit-btn hover-target">Request Private Tour</button>
+
+            <div class="form-success" id="form-success">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="9" stroke="rgba(212,175,55,0.8)" stroke-width="1" />
+                <path d="M6 10L9 13L14 7" stroke="rgba(212,175,55,0.9)" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              Your inquiry has been received. We will be in touch within 24 hours.
+            </div>
           </form>
         </div>
       </div>
     </section>
 
-    <!-- PREMIUM FOOTER -->
+    <!-- ===== FOOTER ===== -->
     <footer class="footer">
-      <div class="footer-content">
-        <div class="footer-brand-column">
-          <a href="#" class="footer-logo hover-target">AETHERA<span>.</span></a>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#" class="footer-logo">AETHERA<span>.</span></a>
           <p class="footer-tagline">Architectural masterworks crafting living sculptures at the edge of the world.</p>
+          <div class="footer-socials">
+            <a href="#" class="social-link">Instagram</a>
+            <a href="#" class="social-link">Vimeo</a>
+            <a href="#" class="social-link">LinkedIn</a>
+          </div>
         </div>
-
-        <div class="footer-links-column">
-          <h4 class="footer-heading">Collections</h4>
-          <ul class="footer-links">
-            <li><a href="#collections" class="hover-target">The Obsidian Pavilion</a></li>
-            <li><a href="#collections" class="hover-target">Aetheria Monolith</a></li>
-            <li><a href="#collections" class="hover-target">The Luminary Crest</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-links-column">
-          <h4 class="footer-heading">Company</h4>
-          <ul class="footer-links">
-            <li><a href="#philosophy" class="hover-target">The Studio</a></li>
-            <li><a href="#philosophy" class="hover-target">Julian Aether</a></li>
-            <li><a href="#inquiry" class="hover-target">Press & Media</a></li>
-          </ul>
+        <div class="footer-cols">
+          <div class="footer-col">
+            <h4 class="footer-heading">Collections</h4>
+            <a href="#collections" class="footer-link">The Obsidian Pavilion</a>
+            <a href="#collections" class="footer-link">Aetheria Monolith</a>
+            <a href="#collections" class="footer-link">The Luminary Crest</a>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-heading">Company</h4>
+            <a href="#philosophy" class="footer-link">The Studio</a>
+            <a href="#philosophy" class="footer-link">Julian Aether</a>
+            <a href="#inquiry" class="footer-link">Press & Media</a>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-heading">Legal</h4>
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Use</a>
+            <a href="#" class="footer-link">Cookie Settings</a>
+          </div>
         </div>
       </div>
-
       <div class="footer-bottom">
-        <p>&copy; 2026 Aethera Architectural Group. All rights reserved. Sourced materials sustainably refined.</p>
-        <div class="footer-socials">
-          <a href="#" class="hover-target">Instagram</a>
-          <a href="#" class="hover-target">Vimeo</a>
-          <a href="#" class="hover-target">LinkedIn</a>
-        </div>
+        <p>© 2026 Aethera Architectural Group. All rights reserved. Sourced materials sustainably refined.</p>
       </div>
     </footer>
 
-  </div>
+  </div><!-- end #landing-page -->
 
-  <!-- ==========================================
-     ADMIN DASHBOARD PAGE CONTAINER
-     ========================================== -->
-  <div id="admin-page" style="display: none;">
+  <!-- ===================== ADMIN PAGE ===================== -->
+  <div id="admin-page" style="display:none">
     <div class="admin-header">
-      <h1 class="admin-brand hover-target">AETHERA<span>.</span> Admin</h1>
-      <a href="#" class="admin-nav-back hover-target">Back to Site</a>
+      <h1 class="admin-brand">AETHERA<span>.</span> Admin</h1>
+      <a href="#" class="admin-back" id="admin-back">← Back to Site</a>
     </div>
-
-    <!-- Analytics Dashboard widgets -->
-    <div class="admin-stats-grid">
-      <div class="stat-widget">
-        <div class="stat-widget-label">Unique Site Visitors</div>
-        <div class="stat-widget-value" id="stats-visitors">0</div>
+    <div class="admin-stats">
+      <div class="stat-card">
+        <div class="stat-label">Unique Visitors</div>
+        <div class="stat-value" id="stats-visitors">0</div>
       </div>
-      <div class="stat-widget">
-        <div class="stat-widget-label">Inquiries Received</div>
-        <div class="stat-widget-value" id="stats-inquiries">0</div>
+      <div class="stat-card">
+        <div class="stat-label">Inquiries Received</div>
+        <div class="stat-value" id="stats-inquiries">0</div>
       </div>
-      <div class="stat-widget">
-        <div class="stat-widget-label">Deal Pipeline Value</div>
-        <div class="stat-widget-value" id="stats-pipeline"><span>$</span>0.00M</div>
+      <div class="stat-card">
+        <div class="stat-label">Deal Pipeline Value</div>
+        <div class="stat-value" id="stats-pipeline">$0.00M</div>
       </div>
     </div>
-
-    <!-- Live Customer Inquiries list container -->
-    <div class="admin-content-box">
-      <h2 class="admin-content-title">Customer Inquiries</h2>
-      <div class="inquiry-list-wrapper" id="admin-inquiry-list">
-        <!-- Dynamically populated via Javascript -->
-        <div class="admin-empty-state">No inquiries received yet. Submit the contact form on the homepage to see live
-          analytics!</div>
+    <div class="admin-box">
+      <h2 class="admin-box-title">Customer Inquiries</h2>
+      <div id="admin-inquiry-list">
+        <p class="admin-empty">No inquiries received yet.</p>
       </div>
     </div>
   </div>
 
-  <!-- FLOATING TOAST SYSTEM -->
+  <!-- TOAST -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- MOCK CORRESPONDENCE RESPONSE MODAL DRAWER -->
-  <div class="response-modal-overlay" id="response-modal-overlay">
-    <div class="response-modal">
-      <div class="modal-header">
-        <h3 class="modal-title">Respond to Message</h3>
-        <button class="modal-close-btn hover-target" id="modal-close-btn">&times;</button>
-      </div>
-      <form id="response-email-form">
-        <input type="hidden" id="modal-sender-email">
-        <div class="form-group" style="margin-bottom: 2rem;">
-          <input type="text" id="modal-recipient" class="form-input hover-target" placeholder=" " readonly>
-          <label class="form-label"
-            style="top: -1.2rem; font-size: 0.7rem; color: var(--gold-accent);">Recipient</label>
-        </div>
-        <div class="form-group" style="margin-bottom: 2rem;">
-          <input type="text" id="modal-subject" class="form-input hover-target" placeholder=" " required>
-          <label for="modal-subject" class="form-label">Subject</label>
-          <div class="form-input-focus-line"></div>
-        </div>
-        <div class="form-group" style="margin-bottom: 2.5rem;">
-          <textarea id="modal-body" class="form-input hover-target" placeholder=" " rows="5" style="resize: none;"
-            required></textarea>
-          <label for="modal-body" class="form-label">Draft Message</label>
-          <div class="form-input-focus-line"></div>
-        </div>
-        <div style="display: flex; gap: 1.5rem; justify-content: flex-end;">
-          <button type="button" class="inquiry-btn hover-target" id="modal-cancel-btn">Cancel</button>
-          <button type="submit" class="form-submit-btn hover-target" style="margin-top: 0; padding: 0.8rem 2rem;">Send
-            Email</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
-  <!-- FLOATING THEME SWITCHER CAPSULE -->
-  <button class="theme-toggle-switch hover-target" id="theme-toggle" aria-label="Toggle Theme">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-    <span class="theme-switch-slider"></span>
-  </button>
 
   <script src="index.js"></script>
 </body>

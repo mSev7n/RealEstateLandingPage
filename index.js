@@ -1,194 +1,306 @@
-document.addEventListener('DOMContentLoaded', () => {
+/* ============================================================
+   AETHERA — index.js
+   Scroll-driven 3D house, cursor, particles, interactions
+   ============================================================ */
 
-  /* ==========================================
-     0. LUXURY DARK/LIGHT THEME CONTROLLER
-     ========================================== */
-  const themeToggle = document.getElementById('theme-toggle');
-  let storedTheme = localStorage.getItem('aethera_theme');
-  
-  if (!storedTheme) {
-    // Smart default: Obsidian Dark is the design identity of Aethera
-    storedTheme = 'dark';
-    localStorage.setItem('aethera_theme', 'dark');
-  }
-
-  if (storedTheme === 'light') {
-    document.body.classList.add('light-theme');
-  } else {
-    document.body.classList.remove('light-theme');
-  }
-
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('light-theme');
-      const isLight = document.body.classList.contains('light-theme');
-      localStorage.setItem('aethera_theme', isLight ? 'light' : 'dark');
-      showToast(`Concierge: ${isLight ? 'Alabaster Light' : 'Obsidian Dark'} mode activated.`);
-    });
-  }
-
-  /* ==========================================
-     1. LUXURY LOADING PRELOADER
-     ========================================== */
+/* ── PRELOADER ─────────────────────────────────────────── */
+(function () {
   const preloader = document.getElementById('preloader');
+  const fill      = document.getElementById('preloader-fill');
+  const pct       = document.getElementById('preloader-pct');
+  let progress    = 0;
 
-  // Fade out preloader when page resources are fully loaded
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      preloader.classList.add('fade-out');
-    }, 600);
-  });
-
-  // Fallback in case window load takes too long
-  setTimeout(() => {
-    if (preloader && !preloader.classList.contains('fade-out')) {
-      preloader.classList.add('fade-out');
+  const tick = () => {
+    progress += Math.random() * 18 + 4;
+    if (progress >= 100) {
+      progress = 100;
+      fill.style.width = '100%';
+      pct.textContent  = '100%';
+      setTimeout(() => {
+        preloader.classList.add('out');
+        document.body.dispatchEvent(new Event('aethera:ready'));
+        initScroll();
+        initParticles();
+      }, 420);
+      return;
     }
-  }, 2500);
+    fill.style.width = progress + '%';
+    pct.textContent  = Math.round(progress) + '%';
+    setTimeout(tick, 60 + Math.random() * 80);
+  };
+  setTimeout(tick, 200);
+})();
 
-  /* ==========================================
-     2. HIGH-PRECISION CUSTOM CURSOR
-     ========================================== */
-  const cursor = document.getElementById('cursor');
+/* ── CUSTOM CURSOR ─────────────────────────────────────── */
+(function () {
+  const cursor   = document.getElementById('cursor');
+  const follower = document.getElementById('cursor-follower');
+  if (!cursor || !follower) return;
 
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
-  let cursorX = mouseX;
-  let cursorY = mouseY;
+  let mx = 0, my = 0, fx = 0, fy = 0;
 
-  // Physics factor (smooth trail follow)
-  const cursorLerp = 0.25;
-
-  document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
   });
 
-  function animateCursor() {
-    cursorX += (mouseX - cursorX) * cursorLerp;
-    cursorY += (mouseY - cursorY) * cursorLerp;
+  (function followLoop () {
+    fx += (mx - fx) * 0.12;
+    fy += (my - fy) * 0.12;
+    follower.style.left = fx + 'px';
+    follower.style.top  = fy + 'px';
+    requestAnimationFrame(followLoop);
+  })();
 
-    if (cursor) {
-      cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
-    }
-
-    requestAnimationFrame(animateCursor);
-  }
-
-  animateCursor();
-
-  // Hover States for Interactive Elements
-  function updateCursorHoverListeners() {
-    const hoverTargets = document.querySelectorAll('.hover-target');
-    hoverTargets.forEach(target => {
-      // Avoid duplicate event attachments
-      target.removeEventListener('mouseenter', addHoverClass);
-      target.removeEventListener('mouseleave', removeHoverClass);
-
-      target.addEventListener('mouseenter', addHoverClass);
-      target.addEventListener('mouseleave', removeHoverClass);
+  document.querySelectorAll('a, button, .property-card, .panel-cta, .card-cta, .filter-tab, .toggle-btn, .nav-cta, .form-submit, .form-submit-btn, .hover-target').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.classList.add('hover');
+      follower.classList.add('hover');
     });
-  }
-
-  function addHoverClass() {
-    if (cursor) cursor.classList.add('hovering');
-  }
-
-  function removeHoverClass() {
-    if (cursor) cursor.classList.remove('hovering');
-  }
-
-  updateCursorHoverListeners();
-
-  // Hide cursor on window exit
-  document.addEventListener('mouseleave', () => {
-    if (cursor) cursor.style.opacity = '0';
+    el.addEventListener('mouseleave', () => {
+      cursor.classList.remove('hover');
+      follower.classList.remove('hover');
+    });
   });
+})();
 
-  document.addEventListener('mouseenter', () => {
-    if (cursor) cursor.style.opacity = '1';
-  });
-
-  /* ==========================================
-     3. HERO MOUSE PARALLAX
-     ========================================== */
-  const heroContent = document.getElementById('hero-content');
-  const hero = document.getElementById('hero');
-
-  if (hero && heroContent) {
-    hero.addEventListener('mousemove', (e) => {
-      const rect = hero.getBoundingClientRect();
-      const x = e.clientX - rect.left - (rect.width / 2);
-      const y = e.clientY - rect.top - (rect.height / 2);
-
-      const shiftX = (x / rect.width) * 35;
-      const shiftY = (y / rect.height) * 25;
-
-      heroContent.style.transform = `translate3d(${shiftX}px, ${shiftY}px, 0)`;
-    });
-
-    hero.addEventListener('mouseleave', () => {
-      heroContent.style.transition = 'transform 1s var(--ease-elastic)';
-      heroContent.style.transform = 'translate3d(0, 0, 0)';
-    });
-
-    hero.addEventListener('mouseenter', () => {
-      heroContent.style.transition = 'none';
-    });
-  }
-
-  /* ==========================================
-     4. NAVBAR SCROLL STYLING
-     ========================================== */
-  const navbar = document.getElementById('navbar');
+/* ── NAVBAR ────────────────────────────────────────────── */
+(function () {
+  const nav = document.getElementById('navbar');
+  const toggle = document.getElementById('menu-toggle');
+  const links  = document.getElementById('nav-links');
 
   window.addEventListener('scroll', () => {
-    if (navbar) {
-      if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
-    }
-  });
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
 
-  /* ==========================================
-     5. MOBILE NAVIGATION MENU DRAWER
-     ========================================== */
-  const menuToggle = document.getElementById('menu-toggle');
-  const navLinks = document.getElementById('nav-links');
-
-  if (menuToggle && navLinks) {
-    menuToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
-      menuToggle.classList.toggle('active');
-
-      const spans = menuToggle.querySelectorAll('span');
-      if (navLinks.classList.contains('active')) {
-        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-        spans[1].style.opacity = '0';
-        spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
-      } else {
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
-      }
-    });
-
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        const spans = menuToggle.querySelectorAll('span');
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
-      });
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      links.classList.toggle('open');
     });
   }
 
-  /* ==========================================
-     6. 3D CARD TILT INTERACTION
-     ========================================== */
+  // close on link click
+  document.querySelectorAll('.nav-link').forEach(a => {
+    a.addEventListener('click', () => {
+      toggle && toggle.classList.remove('open');
+      links && links.classList.remove('open');
+    });
+  });
+})();
+
+/* ── PARTICLES ─────────────────────────────────────────── */
+function initParticles () {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0;
+  const particles = [];
+  const COUNT = window.innerWidth < 600 ? 30 : 60;
+
+  function resize () {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  for (let i = 0; i < COUNT; i++) {
+    particles.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.18,
+      vy: -Math.random() * 0.22 - 0.04,
+      r: Math.random() * 1.2 + 0.3,
+      a: Math.random() * 0.5 + 0.1,
+      gold: Math.random() > 0.7,
+    });
+  }
+
+  function draw () {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -4) { p.y = H + 4; p.x = Math.random() * W; }
+      if (p.x < -4) p.x = W + 4;
+      if (p.x > W + 4) p.x = -4;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.gold
+        ? `rgba(196,160,100,${p.a})`
+        : `rgba(255,255,255,${p.a * 0.5})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ── SCROLL HOUSE ENGINE ───────────────────────────────── */
+function initScroll () {
+  const heroSection = document.getElementById('hero');
+  const house3d     = document.getElementById('house-3d');
+  const progFill    = document.getElementById('progress-fill');
+  const hintEl      = document.getElementById('scroll-hint');
+  const badgeEl     = document.getElementById('scroll-badge');
+  const panels      = [
+    document.getElementById('panel-1'),
+    document.getElementById('panel-2'),
+    document.getElementById('panel-3'),
+    document.getElementById('panel-4'),
+  ];
+
+  if (!heroSection || !house3d) return;
+
+  const SCROLL_HEIGHT = window.innerHeight * 5;
+
+  // Spring for smooth rotation
+  let targetRotY = 0, targetRotX = 0;
+  let currentRotY = 0, currentRotX = 0;
+  let currentScale = 1, targetScale = 1;
+
+  // Panel thresholds [0–1]
+  const thresholds = [
+    [0, 0.22],
+    [0.18, 0.55],
+    [0.52, 0.88],
+    [0.86, 1],
+  ];
+
+  function lerp (a, b, t) { return a + (b - a) * t; }
+  function clamp (val, min, max) { return Math.max(min, Math.min(max, val)); }
+  function easeInOut (t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  function panelOpacity (progress, start, end) {
+    const fadeLen = 0.08;
+    if (progress < start) return 0;
+    if (progress > end) return 0;
+    const fadeInEnd = start + fadeLen;
+    const fadeOutStart = end - fadeLen;
+    if (progress < fadeInEnd) return easeInOut((progress - start) / fadeLen);
+    if (progress > fadeOutStart) return easeInOut(1 - (progress - fadeOutStart) / fadeLen);
+    return 1;
+  }
+
+  function update () {
+    const rect = heroSection.getBoundingClientRect();
+    const scrolled = -rect.top;
+    const progress = clamp(scrolled / (SCROLL_HEIGHT - window.innerHeight), 0, 1);
+
+    // Progress bar
+    if (progFill) progFill.style.height = (progress * 100) + '%';
+
+    // Scroll hint fade
+    if (hintEl) hintEl.style.opacity = progress < 0.06 ? 1 : 0;
+
+    // Badge fade
+    if (badgeEl) badgeEl.style.opacity = progress < 0.12 ? 1 : 0;
+
+    // Welcome layer fade
+    const welcomeEl = document.getElementById('welcome-layer');
+    if (welcomeEl) {
+      const welcomeOp = clamp(1 - (progress / 0.05), 0, 1);
+      welcomeEl.style.opacity = welcomeOp;
+      if (welcomeOp < 0.01) {
+        welcomeEl.style.pointerEvents = 'none';
+        welcomeEl.style.visibility = 'hidden';
+      } else {
+        welcomeEl.style.pointerEvents = 'all';
+        welcomeEl.style.visibility = 'visible';
+      }
+    }
+
+    // House target rotation
+    targetRotY = progress * 360;
+    targetRotX = Math.sin(progress * Math.PI * 1.2) * 10;
+    targetScale = progress < 0.3 ? lerp(1, 1.06, progress / 0.3)
+                : progress < 0.7 ? lerp(1.06, 1.04, (progress - 0.3) / 0.4)
+                : lerp(1.04, 1, (progress - 0.7) / 0.3);
+
+    // Spring
+    const STIFF = 0.08, DAMP = 0.65;
+    currentRotY   = lerp(currentRotY, targetRotY, STIFF + (1-DAMP)*0.02);
+    currentRotX   = lerp(currentRotX, targetRotX, STIFF + (1-DAMP)*0.02);
+    currentScale  = lerp(currentScale, targetScale, 0.06);
+
+    house3d.style.transform =
+      `rotateY(${currentRotY}deg) rotateX(${currentRotX}deg) scale(${currentScale})`;
+
+    // House Y offset
+    const houseY = Math.sin(progress * Math.PI) * -30;
+    document.getElementById('house-stage').style.transform =
+      `translateY(${houseY}px)`;
+
+    // Text panels
+    panels.forEach((panel, i) => {
+      if (!panel) return;
+      const [start, end] = thresholds[i];
+      const op = panelOpacity(progress, start, end);
+      panel.style.opacity = op;
+      if (op < 0.01) {
+        panel.classList.add('panel-hidden');
+        panel.style.pointerEvents = 'none';
+      } else {
+        panel.classList.remove('panel-hidden');
+        if (i === 3) panel.style.pointerEvents = 'all';
+      }
+    });
+
+    requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+
+  /* ── Drag to rotate ──────────────────────────────────── */
+  let dragging = false, lastX = 0, lastY = 0, dragDeltaX = 0, dragDeltaY = 0;
+
+  function onPointerDown (e) {
+    dragging = true;
+    lastX = e.touches ? e.touches[0].clientX : e.clientX;
+    lastY = e.touches ? e.touches[0].clientY : e.clientY;
+  }
+  function onPointerMove (e) {
+    if (!dragging) return;
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    dragDeltaX = cx - lastX;
+    dragDeltaY = cy - lastY;
+    lastX = cx; lastY = cy;
+    targetRotY += dragDeltaX * 0.5;
+    targetRotX -= dragDeltaY * 0.3;
+  }
+  function onPointerUp () { dragging = false; }
+
+  const stage = document.getElementById('house-stage');
+  if (stage) {
+    stage.addEventListener('mousedown', onPointerDown);
+    stage.addEventListener('touchstart', onPointerDown, { passive: true });
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('touchmove', onPointerMove, { passive: true });
+    window.addEventListener('mouseup', onPointerUp);
+    window.addEventListener('touchend', onPointerUp);
+  }
+}
+
+/* ── SCROLL REVEAL ─────────────────────────────────────── */
+(function () {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+    observer.observe(el);
+  });
+})();
+
+/* ── 3D CARD TILT INTERACTION ──────────────────────────── */
+(function () {
   const cards = document.querySelectorAll('.property-card');
 
   cards.forEach(card => {
@@ -207,24 +319,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
       card.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.02)`;
 
-      const glowColor = `rgba(184, 144, 71, ${Math.min(0.18, (Math.abs(percentX) + Math.abs(percentY)) * 0.3)})`;
+      const glowColor = `rgba(212, 175, 55, ${Math.min(0.18, (Math.abs(percentX) + Math.abs(percentY)) * 0.3)})`;
       card.style.boxShadow = `0 25px 50px rgba(0,0,0,0.06), 0 0 30px ${glowColor}`;
     });
 
     card.addEventListener('mouseleave', () => {
-      card.style.transition = 'transform 0.8s var(--ease-elastic), box-shadow 0.8s var(--ease-elastic), border-color 0.8s var(--ease-elastic)';
+      card.style.transition = 'transform 0.8s var(--ease), box-shadow 0.8s var(--ease), border-color 0.8s var(--ease)';
       card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)';
       card.style.boxShadow = '';
 
       setTimeout(() => {
-        card.style.transition = 'border-color var(--transition-medium), box-shadow var(--transition-medium)';
+        card.style.transition = 'border-color 0.5s var(--ease), box-shadow 0.5s var(--ease)';
       }, 800);
     });
   });
+})();
 
-  /* ==========================================
-     7. PROPERTY CARD TOGGLE VIEW ENGINE
-     ========================================== */
+/* ── CARD IMAGE TOGGLE ─────────────────────────────────── */
+(function () {
+  const cards = document.querySelectorAll('.property-card');
+
   cards.forEach(card => {
     const extBtn = card.querySelector('.exterior-btn');
     const intBtn = card.querySelector('.interior-btn');
@@ -248,11 +362,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
+})();
 
-  /* ==========================================
-     8. CATEGORY FILTER TAB ENGINE
-     ========================================== */
+/* ── FILTER TABS ───────────────────────────────────────── */
+(function () {
   const filterTabs = document.querySelectorAll('.filter-tab');
+  const cards = document.querySelectorAll('.property-card');
 
   filterTabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -278,361 +393,146 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+})();
 
-  /* ==========================================
-     9. SCROLL-DRIVEN ENTRY REVEALS & PARALLAX
-     ========================================== */
-  const revealOptions = {
-    threshold: 0.08,
-    rootMargin: '0px 0px -40px 0px'
-  };
+/* ── INQUIRY FORM ──────────────────────────────────────── */
+(function () {
+  const form = document.getElementById('landing-contact-form');
+  if (!form) return;
 
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, revealOptions);
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name     = document.getElementById('form-name').value.trim();
+    const email    = document.getElementById('form-email').value.trim();
+    const res      = document.getElementById('form-residence').value;
+    const msg      = document.getElementById('form-message').value.trim();
+    const success  = document.getElementById('form-success');
 
-  const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-  revealElements.forEach(el => {
-    revealObserver.observe(el);
-  });
-
-  // Scroll Parallax for About Image stack
-  const aboutImgMain = document.getElementById('about-img-1');
-  const aboutImgSub = document.getElementById('about-img-2');
-  const aboutSection = document.getElementById('philosophy');
-
-  if (aboutSection && aboutImgMain && aboutImgSub) {
-    window.addEventListener('scroll', () => {
-      const sectionRect = aboutSection.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      if (sectionRect.top < windowHeight && sectionRect.bottom > 0) {
-        const scrolledPercentage = (windowHeight - sectionRect.top) / (windowHeight + sectionRect.height);
-
-        const mainTranslate = (scrolledPercentage - 0.5) * 50;
-        const subTranslate = (scrolledPercentage - 0.5) * -110;
-
-        aboutImgMain.style.transform = `translate3d(0, ${mainTranslate}px, 0)`;
-        aboutImgSub.style.transform = `translate3d(0, ${subTranslate}px, 0)`;
-      }
-    });
-  }
-
-
-  /* ==========================================
-     10. VISITOR TRACKER & LOCAL STORAGE CONFIG
-     ========================================== */
-  function trackVisitorMetrics() {
-    // Unique Session Check
-    if (!sessionStorage.getItem('aethera_session_visited')) {
-      sessionStorage.setItem('aethera_session_visited', 'true');
-
-      // Update Persistent localStorage Traffic Counter
-      let currentVisitors = parseInt(localStorage.getItem('aethera_visitors') || '0');
-      currentVisitors += 1;
-      localStorage.setItem('aethera_visitors', currentVisitors.toString());
-    }
-  }
-
-  // Pre-seed mock inquiries if localStorage database is empty
-  function preSeedMockData() {
-    const inquiriesKey = 'aethera_inquiries';
-    if (!localStorage.getItem(inquiriesKey)) {
-      const demoInquiries = [
-        {
-          id: '1716942000000',
-          name: 'Lady Seraphina Rothschild',
-          email: 'seraphina@rothschild.ch',
-          residence: 'The Luminary Crest',
-          message: 'Requesting a private reservation block for August. We require direct helicopter landing authorization codes for our transfer from LAX. Please coordinate with our estate directors.',
-          timestamp: '2026-05-28, 14:32:00'
-        },
-        {
-          id: '1716945600000',
-          name: 'Alexander Sterling',
-          email: 'sterling@luxuryholdings.com',
-          residence: 'The Obsidian Pavilion',
-          message: 'My design team is reviewing Julian Aether\'s basalt structural layouts. We wish to negotiate terms for custom expansion parameters on the cliffside foundation layout.',
-          timestamp: '2026-05-29, 09:15:10'
-        }
-      ];
-      localStorage.setItem(inquiriesKey, JSON.stringify(demoInquiries));
-    }
-
-    // Seed initial visitors if 0
-    if (!localStorage.getItem('aethera_visitors') || localStorage.getItem('aethera_visitors') === '0') {
-      localStorage.setItem('aethera_visitors', '147'); // Premium starting metric
-    }
-  }
-
-  trackVisitorMetrics();
-  preSeedMockData();
-
-
-  /* ==========================================
-     11. TOAST NOTIFICATION ALERTS
-     ========================================== */
-  const toastContainer = document.getElementById('toast-container');
-
-  function showToast(message) {
-    if (!toastContainer) return;
-
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = message;
-
-    toastContainer.appendChild(toast);
-
-    // Smooth remove
-    setTimeout(() => {
-      toast.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(-20px)';
-      setTimeout(() => {
-        toast.remove();
-      }, 500);
-    }, 4000);
-  }
-
-
-  /* ==========================================
-     12. FORM CAPTURE & INQUIRY SYSTEM
-     ========================================== */
-  const contactForm = document.getElementById('landing-contact-form');
-
-  if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const nameVal = document.getElementById('form-name').value;
-      const emailVal = document.getElementById('form-email').value;
-      const resVal = document.getElementById('form-residence').value;
-      const msgVal = document.getElementById('form-message').value;
-
-      const newInquiry = {
-        id: Date.now().toString(),
-        name: nameVal,
-        email: emailVal,
-        residence: resVal,
-        message: msgVal,
-        timestamp: new Date().toLocaleString()
-      };
-
-      // Save to localStorage
-      const inquiriesKey = 'aethera_inquiries';
-      let currentInquiries = JSON.parse(localStorage.getItem(inquiriesKey) || '[]');
-      currentInquiries.unshift(newInquiry); // Insert at beginning of array
-      localStorage.setItem(inquiriesKey, JSON.stringify(currentInquiries));
-
-      // Reset form controls
-      contactForm.reset();
-
-      // Success Alert
-      showToast('Concierge: Inquiry logged. A private representative will establish contact.');
-    });
-  }
-
-
-  /* ==========================================
-     13. SPA ROUTER: DETECT /#admin & /#/admin
-     ========================================== */
-  const landingPage = document.getElementById('landing-page');
-  const adminPage = document.getElementById('admin-page');
-
-  function resolveSPARouting() {
-    const hash = window.location.hash;
-
-    if (hash === '#admin' || hash === '#/admin') {
-      if (landingPage) landingPage.style.display = 'none';
-      if (adminPage) adminPage.style.display = 'block';
-
-      // Smooth fade-in style
-      adminPage.style.opacity = '0';
-      setTimeout(() => {
-        adminPage.style.opacity = '1';
-      }, 50);
-
-      renderAdminDashboard();
-    } else {
-      if (landingPage) landingPage.style.display = 'block';
-      if (adminPage) adminPage.style.display = 'none';
-
-      if (landingPage) {
-        landingPage.style.opacity = '0';
-        setTimeout(() => {
-          landingPage.style.opacity = '1';
-        }, 50);
-      }
-    }
-
-    // Ensure hovering cursors update for dynamic new elements
-    setTimeout(updateCursorHoverListeners, 100);
-  }
-
-  window.addEventListener('hashchange', resolveSPARouting);
-  window.addEventListener('load', resolveSPARouting);
-
-  // Also run router check immediately on execution
-  resolveSPARouting();
-
-
-  /* ==========================================
-     14. ADMIN DASHBOARD VIEW CONTROLLER
-     ========================================== */
-  function renderAdminDashboard() {
-    const statVisitors = document.getElementById('stats-visitors');
-    const statInquiries = document.getElementById('stats-inquiries');
-    const statPipeline = document.getElementById('stats-pipeline');
-    const inquiryList = document.getElementById('admin-inquiry-list');
-
-    const inquiriesKey = 'aethera_inquiries';
-    const inquiries = JSON.parse(localStorage.getItem(inquiriesKey) || '[]');
-    const totalVisitors = localStorage.getItem('aethera_visitors') || '147';
-
-    // Update Stats counters
-    if (statVisitors) statVisitors.textContent = totalVisitors;
-    if (statInquiries) statInquiries.textContent = inquiries.length.toString();
-
-    // Calculate Deal Pipeline sum
-    let pipelineTotal = 0; // in Millions
-    inquiries.forEach(inq => {
-      if (inq.residence.includes('Obsidian')) pipelineTotal += 12.45;
-      else if (inq.residence.includes('Aetheria')) pipelineTotal += 16.80;
-      else if (inq.residence.includes('Luminary')) pipelineTotal += 24.00;
-      else pipelineTotal += 5.00; // Average default deal size
-    });
-
-    if (statPipeline) {
-      statPipeline.innerHTML = `<span>$</span>${pipelineTotal.toFixed(2)}M`;
-    }
-
-    // Render Message matrix
-    if (!inquiryList) return;
-    inquiryList.innerHTML = '';
-
-    if (inquiries.length === 0) {
-      inquiryList.innerHTML = '<div class="admin-empty-state">No inquiries received yet. Submit the contact form on the homepage to see live analytics!</div>';
+    if (!name || !email || !res || !msg) {
+      showToast('Please complete all fields.');
       return;
     }
 
-    inquiries.forEach(inq => {
-      const card = document.createElement('div');
-      card.className = 'inquiry-message-card hover-target';
-      card.setAttribute('data-id', inq.id);
+    // Save to localStorage
+    const inquiries = JSON.parse(localStorage.getItem('aethera_inquiries') || '[]');
+    inquiries.push({ name, email, res, msg, date: new Date().toISOString() });
+    localStorage.setItem('aethera_inquiries', JSON.stringify(inquiries));
 
-      card.innerHTML = `
-        <div class="inquiry-sender-meta">
-          <div class="sender-name">${inq.name}</div>
-          <a href="mailto:${inq.email}" class="sender-email hover-target">${inq.email}</a>
-          <div class="sender-timestamp">${inq.timestamp}</div>
-        </div>
-        <div class="inquiry-message-content">
-          <div class="interest-residence-badge">${inq.residence}</div>
-          <p class="inquiry-body-text">"${inq.message}"</p>
-        </div>
-        <div class="inquiry-actions">
-          <button class="inquiry-btn inquiry-btn-respond hover-target" data-email="${inq.email}" data-name="${inq.name}">Respond</button>
-          <button class="inquiry-btn inquiry-btn-delete hover-target" data-id="${inq.id}">Delete</button>
-        </div>
-      `;
+    // Update visitor/inquiry counts
+    const visitors = parseInt(localStorage.getItem('aethera_visitors') || '0') + 1;
+    localStorage.setItem('aethera_visitors', visitors);
 
-      inquiryList.appendChild(card);
-    });
+    form.reset();
+    success && success.classList.add('visible');
+    showToast('Your inquiry has been received.');
 
-    // Wire up Admin Actions click events
-    wireAdminActionButtons();
-  }
+    setTimeout(() => success && success.classList.remove('visible'), 5000);
+  });
+})();
 
-  function wireAdminActionButtons() {
-    // Delete Button Logic
-    document.querySelectorAll('.inquiry-btn-delete').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const idToDelete = btn.getAttribute('data-id');
-        const inquiriesKey = 'aethera_inquiries';
-        let inquiries = JSON.parse(localStorage.getItem(inquiriesKey) || '[]');
-
-        inquiries = inquiries.filter(item => item.id !== idToDelete);
-        localStorage.setItem(inquiriesKey, JSON.stringify(inquiries));
-
-        // Success feedback & re-render
-        showToast('System: Inquiry record purged from local databases.');
-        renderAdminDashboard();
-      });
-    });
-
-    // Respond Email Modal trigger
-    const modalOverlay = document.getElementById('response-modal-overlay');
-    const modalRecipient = document.getElementById('modal-recipient');
-    const modalSenderEmail = document.getElementById('modal-sender-email');
-    const modalSubject = document.getElementById('modal-subject');
-    const modalBody = document.getElementById('modal-body');
-
-    document.querySelectorAll('.inquiry-btn-respond').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const email = btn.getAttribute('data-email');
-        const name = btn.getAttribute('data-name');
-
-        if (modalOverlay && modalRecipient && modalSenderEmail) {
-          modalRecipient.value = `${name} <${email}>`;
-          modalSenderEmail.value = email;
-
-          // Custom beautiful subject template
-          if (modalSubject) {
-            modalSubject.value = 'AETHERA ACQUISITION: Private Commission Inquiry';
-          }
-          if (modalBody) {
-            modalBody.value = `Dear ${name.split(' ')[0]},\n\nJulian Aether and the Aethera Concierge Team have received your requirements regarding our portfolio. We would be pleased to arrange an exclusive private flight transfer and tour.\n\nBest regards,\nAethera Acquisitions`;
-          }
-
-          modalOverlay.classList.add('active');
-        }
-      });
-    });
-
-    // Make sure dynamically created cursor-hovers register!
-    updateCursorHoverListeners();
-  }
-
-
-  /* ==========================================
-     15. RESPONSE EMAIL MODAL FORM ENGINE
-     ========================================== */
-  const modalOverlay = document.getElementById('response-modal-overlay');
-  const closeBtn = document.getElementById('modal-close-btn');
-  const cancelBtn = document.getElementById('modal-cancel-btn');
-  const responseForm = document.getElementById('response-email-form');
-
-  function hideModal() {
-    if (modalOverlay) {
-      modalOverlay.classList.remove('active');
-      responseForm.reset();
-    }
-  }
-
-  if (closeBtn) closeBtn.addEventListener('click', hideModal);
-  if (cancelBtn) cancelBtn.addEventListener('click', hideModal);
-
-  if (modalOverlay) {
-    modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) hideModal();
-    });
-  }
-
-  if (responseForm) {
-    responseForm.addEventListener('submit', (e) => {
+/* ── ADMIN PAGE ────────────────────────────────────────── */
+(function () {
+  const adminBack = document.getElementById('admin-back');
+  if (adminBack) {
+    adminBack.addEventListener('click', e => {
       e.preventDefault();
-
-      const recipientEmail = document.getElementById('modal-sender-email').value;
-
-      // Success Response feedback
-      hideModal();
-      showToast(`Concierge: Response successfully dispatched to ${recipientEmail}`);
+      document.getElementById('admin-page').style.display = 'none';
+      document.getElementById('landing-page').style.display = '';
     });
   }
 
-});
+  // Secret combo: press Ctrl+Shift+A
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+      const lp = document.getElementById('landing-page');
+      const ap = document.getElementById('admin-page');
+      lp.style.display = 'none';
+      ap.style.display = 'block';
+      loadAdminData();
+    }
+  });
+
+  function loadAdminData () {
+    const visitors  = parseInt(localStorage.getItem('aethera_visitors') || '0');
+    const inquiries = JSON.parse(localStorage.getItem('aethera_inquiries') || '[]');
+
+    document.getElementById('stats-visitors').textContent  = visitors;
+    document.getElementById('stats-inquiries').textContent = inquiries.length;
+
+    // Pipeline calc
+    const total = inquiries.reduce((sum, inq) => {
+      const prices = { 'The Obsidian Pavilion': 12.45, 'Aetheria Monolith': 16.8, 'The Luminary Crest': 24 };
+      return sum + (prices[inq.res] || 0);
+    }, 0);
+    document.getElementById('stats-pipeline').textContent = '$' + total.toFixed(2) + 'M';
+
+    const list = document.getElementById('admin-inquiry-list');
+    if (!list) return;
+    if (!inquiries.length) {
+      list.innerHTML = '<p class="admin-empty">No inquiries received yet.</p>';
+      return;
+    }
+    list.innerHTML = inquiries.map((inq, i) => `
+      <div style="padding:20px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <strong style="font-family:var(--font-serif);color:var(--off-white)">${inq.name}</strong>
+          <span style="font-size:9px;color:var(--muted);letter-spacing:.1em">${new Date(inq.date).toLocaleDateString()}</span>
+        </div>
+        <div style="font-size:10px;color:var(--gold-a);margin-bottom:6px;letter-spacing:.1em">${inq.email} — ${inq.res}</div>
+        <div style="font-size:13px;color:var(--muted);font-family:var(--font-serif);font-style:italic">${inq.msg}</div>
+      </div>
+    `).join('');
+  }
+})();
+
+
+
+/* ── VISITOR TRACKING ──────────────────────────────────── */
+(function () {
+  const key = 'aethera_visited';
+  if (!sessionStorage.getItem(key)) {
+    sessionStorage.setItem(key, '1');
+    const v = parseInt(localStorage.getItem('aethera_visitors') || '0') + 1;
+    localStorage.setItem('aethera_visitors', v);
+  }
+})();
+
+/* ── TEXT PANELS MOUSE PARALLAX ────────────────────────── */
+(function () {
+  const scrollSticky = document.getElementById('scroll-sticky');
+  const panelsLayer = document.querySelector('.panels-layer');
+
+  if (scrollSticky && panelsLayer) {
+    scrollSticky.addEventListener('mousemove', (e) => {
+      if (window.innerWidth <= 768) return;
+      const rect = scrollSticky.getBoundingClientRect();
+      const x = e.clientX - rect.left - (rect.width / 2);
+      const y = e.clientY - rect.top - (rect.height / 2);
+
+      const shiftX = (x / rect.width) * 30;
+      const shiftY = (y / rect.height) * 20;
+
+      panelsLayer.style.transform = `translate3d(${shiftX}px, ${shiftY}px, 0)`;
+    });
+
+    scrollSticky.addEventListener('mouseleave', () => {
+      panelsLayer.style.transition = 'transform 0.8s var(--ease)';
+      panelsLayer.style.transform = 'translate3d(0, 0, 0)';
+    });
+
+    scrollSticky.addEventListener('mouseenter', () => {
+      panelsLayer.style.transition = 'none';
+    });
+  }
+})();
+
+/* ── TOAST ─────────────────────────────────────────────── */
+function showToast (msg) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  container.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
